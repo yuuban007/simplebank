@@ -26,7 +26,7 @@ func TestTransferTX(t *testing.T) {
 		txName := fmt.Sprintf("tx %d", i+1)
 		go func() {
 			ctx := context.WithValue(context.Background(), txKey, txName)
-			result, err := store.TranserTx(ctx, TransferTxParams{
+			result, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: account1.ID,
 				ToAccountID:   account2.ID,
 				Amount:        amount,
@@ -135,7 +135,7 @@ func TestTransferTXDeadLock(t *testing.T) {
 		txName := fmt.Sprintf("tx %d", i+1)
 		go func() {
 			ctx := context.WithValue(context.Background(), txKey, txName)
-			_, err := store.TranserTx(ctx, TransferTxParams{
+			_, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: fromAccount.ID,
 				ToAccountID:   toAccount.ID,
 				Amount:        amount,

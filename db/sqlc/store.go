@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-// Store provides all function to exceute db queries and transactions
+// Store provides all function to execute db queries and transactions
 type Store struct {
 	*Queries
 	db *sql.DB
@@ -56,16 +56,12 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
-// TranserTx performs a transfer from one account to the other
+// TransferTx performs a transfer from one account to the other
 // It creates a transfer record, add account entries, and update accounts' balance within a db transaction
-func (store *Store) TranserTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
 	err := store.execTX(ctx, func(q *Queries) error {
 		var err error
-		// TODO： Delete any tx-related after finish debug
-		txName := ctx.Value(txKey)
-
-		fmt.Println(txName, "create transfer")
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID: arg.FromAccountID,
 			ToAccountID:   arg.ToAccountID,
@@ -96,6 +92,9 @@ func (store *Store) TranserTx(ctx context.Context, arg TransferTxParams) (Transf
 			result.FromAccount, result.ToAccount, err = addMoney(ctx, q, arg.FromAccountID, -arg.Amount, arg.ToAccountID, arg.Amount)
 		} else {
 			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, arg.ToAccountID, arg.Amount, arg.FromAccountID, -arg.Amount)
+		}
+		if err != nil {
+			return err
 		}
 		return nil
 	})
