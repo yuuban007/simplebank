@@ -14,7 +14,7 @@ func createRandomEntry(t *testing.T) Entry {
 		Amount:    int64(rand.Intn(2000) - 1000), // -1000~1000
 	}
 
-	entry, err := testQueries.CreateEntry(context.Background(), arg)
+	entry, err := testStore.CreateEntry(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry)
 
@@ -39,7 +39,7 @@ func TestListEntry(t *testing.T) {
 		Limit:     10,
 		Offset:    0,
 	}
-	entries, err := testQueries.ListEntry(context.Background(), arg)
+	entries, err := testStore.ListEntry(context.Background(), arg)
 	require.NoError(t, err)
 	for _, entry := range entries {
 		require.NotEmpty(t, entry)
@@ -50,7 +50,7 @@ func TestListEntry(t *testing.T) {
 func TestGetEntryById(t *testing.T) {
 	entry1 := createRandomEntry(t)
 
-	entry2, err := testQueries.GetEntryById(context.Background(), entry1.ID)
+	entry2, err := testStore.GetEntryById(context.Background(), entry1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry2)
 

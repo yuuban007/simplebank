@@ -16,7 +16,7 @@ func createRandomTransfer(t *testing.T, account1, account2 Account) Transfer {
 	}
 
 	// transfer, err := testStore.CreateTransfer(context.Background(), arg)
-	transfer, err := testQueries.CreateTransfer(context.Background(), arg)
+	transfer, err := testStore.CreateTransfer(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer)
 
