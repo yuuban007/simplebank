@@ -10,7 +10,7 @@ import (
 
 func createRandomEntry(t *testing.T) Entry {
 	arg := CreateEntryParams{
-		AccountID: int64(rand.Intn(20)),
+		AccountID: int64(1),
 		Amount:    int64(rand.Intn(2000) - 1000), // -1000~1000
 	}
 
