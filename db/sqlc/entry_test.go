@@ -9,8 +9,9 @@ import (
 )
 
 func createRandomEntry(t *testing.T) Entry {
+	account := createRandomAccount(t)
 	arg := CreateEntryParams{
-		AccountID: int64(1),
+		AccountID: int64(account.ID),
 		Amount:    int64(rand.Intn(2000) - 1000), // -1000~1000
 	}
 
