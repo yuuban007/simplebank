@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// bank acount
+// bank account
 type Account struct {
 	ID      int64  `json:"id"`
 	Owner   string `json:"owner"`
@@ -18,11 +18,11 @@ type Account struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// record all the accont change
+// record all the account change
 type Entry struct {
 	ID        int64 `json:"id"`
 	AccountID int64 `json:"account_id"`
-	// could be postive or negative
+	// could be positive or negative
 	Amount    int64     `json:"amount"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -31,7 +31,7 @@ type Transfer struct {
 	ID            int64 `json:"id"`
 	FromAccountID int64 `json:"from_account_id"`
 	ToAccountID   int64 `json:"to_account_id"`
-	// must be postive
+	// must be positive
 	Amount    int64     `json:"amount"`
 	CreatedAt time.Time `json:"created_at"`
 }

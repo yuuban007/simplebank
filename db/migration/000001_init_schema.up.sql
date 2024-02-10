@@ -31,15 +31,15 @@ CREATE INDEX ON "transfers" ("to_account_id");
 
 CREATE INDEX ON "transfers" ("from_account_id", "to_account_id");
 
-COMMENT ON TABLE "accounts" IS 'bank acount';
+COMMENT ON TABLE "accounts" IS 'bank account';
 
 COMMENT ON COLUMN "accounts"."currency" IS 'like USD or RMB';
 
-COMMENT ON TABLE "entries" IS 'record all the accont change';
+COMMENT ON TABLE "entries" IS 'record all the account change';
 
-COMMENT ON COLUMN "entries"."amount" IS 'could be postive or negative';
+COMMENT ON COLUMN "entries"."amount" IS 'could be positive or negative';
 
-COMMENT ON COLUMN "transfers"."amount" IS 'must be postive';
+COMMENT ON COLUMN "transfers"."amount" IS 'must be positive';
 
 ALTER TABLE "entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");
 
