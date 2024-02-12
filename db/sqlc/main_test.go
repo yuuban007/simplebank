@@ -10,7 +10,7 @@ import (
 	"github.com/yuuban007/simplebank/util"
 )
 
-var testStore *Store
+var testStore Store
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {

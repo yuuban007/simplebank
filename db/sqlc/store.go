@@ -7,7 +7,25 @@ import (
 )
 
 // Store provides all function to execute db queries and transactions
-type Store struct {
+type Store interface {
+	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
+	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
+	CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error)
+	CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfer, error)
+	DeleteAccount(ctx context.Context, id int64) error
+	GetAccount(ctx context.Context, id int64) (Account, error)
+	GetAccountForUpdate(ctx context.Context, id int64) (Account, error)
+	GetEntryById(ctx context.Context, id int64) (Entry, error)
+	GetTransfer(ctx context.Context, id int64) (Transfer, error)
+	ListAccount(ctx context.Context, arg ListAccountParams) ([]Account, error)
+	ListEntry(ctx context.Context, arg ListEntryParams) ([]Entry, error)
+	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfer, error)
+	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+}
+
+// SQLStore provides all function to execute SQL queries and transactions
+type SQLStore struct {
 	*Queries
 	db *sql.DB
 }
@@ -15,15 +33,15 @@ type Store struct {
 var txKey = struct{}{}
 
 // NewStore creates a new Store
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		Queries: New(db),
 		db:      db,
 	}
 }
 
 // execTx executes a function within a database transaction
-func (store *Store) execTX(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) execTX(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -58,7 +76,7 @@ type TransferTxResult struct {
 
 // TransferTx performs a transfer from one account to the other
 // It creates a transfer record, add account entries, and update accounts' balance within a db transaction
-func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
 	err := store.execTX(ctx, func(q *Queries) error {
 		var err error

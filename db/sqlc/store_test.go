@@ -14,7 +14,7 @@ func TestTransferTX(t *testing.T) {
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 
-	fmt.Println(">>before", account1.Balance, account2.Balance)
+	// fmt.Println(">>before", account1.Balance, account2.Balance)
 
 	// run n concurrent transfer transactions
 	n := 6
@@ -85,7 +85,7 @@ func TestTransferTX(t *testing.T) {
 		require.Equal(t, toAccount.ID, account2.ID)
 
 		// check accounts' balance
-		fmt.Println(">>>tx:", fromAccount.Balance, toAccount.Balance)
+		// fmt.Println(">>>tx:", fromAccount.Balance, toAccount.Balance)
 
 		diff1 := account1.Balance - fromAccount.Balance
 		diff2 := toAccount.Balance - account2.Balance
@@ -104,7 +104,7 @@ func TestTransferTX(t *testing.T) {
 	require.NoError(t, err)
 	updatedAccount2, err := store.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
-	fmt.Println(">>>after:", updatedAccount1.Balance, updatedAccount2.Balance)
+	// fmt.Println(">>>after:", updatedAccount1.Balance, updatedAccount2.Balance)
 
 	require.Equal(t, updatedAccount1.Balance, account1.Balance-int64(n)*int64(amount))
 	require.Equal(t, updatedAccount2.Balance, account2.Balance+int64(n)*int64(amount))
@@ -116,7 +116,7 @@ func TestTransferTXDeadLock(t *testing.T) {
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 
-	fmt.Println(">>before", account1.Balance, account2.Balance)
+	// fmt.Println(">>before", account1.Balance, account2.Balance)
 
 	// run n concurrent transfer transactions
 	n := 30
@@ -156,7 +156,7 @@ func TestTransferTXDeadLock(t *testing.T) {
 	updatedAccount2, err := store.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
-	fmt.Println(">>>after:", updatedAccount1.Balance, updatedAccount2.Balance)
+	// fmt.Println(">>>after:", updatedAccount1.Balance, updatedAccount2.Balance)
 
 	require.Equal(t, updatedAccount1.Balance, account1.Balance)
 	require.Equal(t, updatedAccount2.Balance, account2.Balance)
