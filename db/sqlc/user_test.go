@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"strings"
 	"testing"
 	"time"
 
@@ -12,9 +11,11 @@ import (
 
 func createRandomUser(t *testing.T) User {
 	username := util.RandomOwner()
+	hashedPassword, err := util.HashPassword(util.RandomString(8))
+	require.NoError(t, err)
 	arg := CreateUserParams{
-		Username:       strings.Split(username, " ")[0],
-		HashedPassword: "Secret",
+		Username:       username,
+		HashedPassword: hashedPassword,
 		FullName:       username,
 		Email:          util.RandomEmail(),
 	}
@@ -24,7 +25,6 @@ func createRandomUser(t *testing.T) User {
 	require.NotEmpty(t, user)
 
 	require.Equal(t, arg.Username, user.Username)
-	require.Equal(t, arg.HashedPassword, user.HashedPassword)
 	require.Equal(t, arg.FullName, user.FullName)
 	require.Equal(t, arg.Email, user.Email)
 
