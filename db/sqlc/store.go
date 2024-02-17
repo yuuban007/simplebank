@@ -22,6 +22,8 @@ type Store interface {
 	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfer, error)
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
 	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+	GetUser(ctx context.Context, username string) (User, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 }
 
 // SQLStore provides all function to execute SQL queries and transactions

@@ -4,12 +4,15 @@ import (
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/brianvoe/gofakeit/v6"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 func init() {
 	rand.NewSource(time.Now().UnixNano())
+	gofakeit.Seed(time.Now().UnixMilli())
 }
 
 // RandomInt generates a random integer between min and max
@@ -30,7 +33,7 @@ func RandomString(n int) string {
 
 // RandomOwner generates a random owner name
 func RandomOwner() string {
-	return RandomString(6)
+	return gofakeit.Name()
 }
 
 // RandomMoney generates a random amount of money
@@ -43,4 +46,9 @@ func RandomCurrency() string {
 	currencies := []string{USD, EUR, CAD}
 	n := len(currencies)
 	return currencies[rand.Intn(n)]
+}
+
+// RandomEmail generates a random email address
+func RandomEmail() string {
+	return gofakeit.Email()
 }

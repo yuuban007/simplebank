@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"database/sql"
+	"strings"
 	"testing"
 	"time"
 
@@ -10,43 +10,53 @@ import (
 	"github.com/yuuban007/simplebank/util"
 )
 
-func createRandomAccount(t *testing.T) Account {
-	user := createRandomUser(t)
-	arg := CreateAccountParams{
-		Owner:    user.Username,
-		Balance:  util.RandomMoney(),
-		Currency: util.RandomCurrency(),
+func createRandomUser(t *testing.T) User {
+	username := util.RandomOwner()
+	arg := CreateUserParams{
+		Username:       strings.Split(username, " ")[0],
+		HashedPassword: "Secret",
+		FullName:       username,
+		Email:          util.RandomEmail(),
 	}
 
-	account, err := testStore.CreateAccount(context.Background(), arg)
+	user, err := testStore.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
-	require.NotEmpty(t, account)
+	require.NotEmpty(t, user)
 
-	require.Equal(t, arg.Balance, account.Balance)
-	require.Equal(t, arg.Owner, account.Owner)
-	require.Equal(t, arg.Currency, account.Currency)
+	require.Equal(t, arg.Username, user.Username)
+	require.Equal(t, arg.HashedPassword, user.HashedPassword)
+	require.Equal(t, arg.FullName, user.FullName)
+	require.Equal(t, arg.Email, user.Email)
 
-	require.NotZero(t, account.ID)
-	require.NotZero(t, account.CreatedAt)
+	// how to test field PasswordChangedAt?
+	// Make sure time isZero
+	// require.Zero(t, user.PasswordChangedAt)
+	require.True(t, user.PasswordChangedAt.IsZero())
+	require.NotZero(t, user.CreatedAt)
 
-	return account
+	return user
 }
-func TestCreateAccount(t *testing.T) {
-	createRandomAccount(t)
+func TestCreateUser(t *testing.T) {
+	createRandomUser(t)
 }
-func TestGetAccount(t *testing.T) {
-	account1 := createRandomAccount(t)
-	account2, err := testStore.GetAccount(context.Background(), account1.ID)
+
+func TestGetUser(t *testing.T) {
+	user1 := createRandomUser(t)
+	user2, err := testStore.GetUser(context.Background(), user1.Username)
 
 	require.NoError(t, err)
-	require.NotEmpty(t, account2)
+	require.NotEmpty(t, user2)
 
-	require.Equal(t, account1.ID, account2.ID)
-	require.Equal(t, account1.Balance, account2.Balance)
-	require.Equal(t, account1.Currency, account2.Currency)
-	require.Equal(t, account1.Owner, account2.Owner)
-	require.WithinDuration(t, account1.CreatedAt, account2.CreatedAt, time.Second)
+	require.Equal(t, user1.FullName, user2.FullName)
+	require.Equal(t, user1.Email, user2.Email)
+	require.Equal(t, user1.HashedPassword, user2.HashedPassword)
+	require.Equal(t, user1.Username, user2.Username)
+
+	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
+	require.WithinDuration(t, user1.PasswordChangedAt, user2.PasswordChangedAt, time.Second)
 }
+
+/*
 func TestUpdateAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
 
@@ -90,3 +100,4 @@ func TestListAccount(t *testing.T) {
 		require.NotEmpty(t, account)
 	}
 }
+*/
