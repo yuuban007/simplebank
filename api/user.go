@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -89,7 +90,11 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	// check if the user exists
 	user, err := server.store.GetUser(ctx, req.Username)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
