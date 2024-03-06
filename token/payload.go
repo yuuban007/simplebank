@@ -16,14 +16,14 @@ type Payload struct {
 }
 
 var (
-	ErrInvalidToken   = errors.New("invalid token")
-	ErrorTokenExpired = errors.New("token is expired")
+	ErrInvalidToken = errors.New("invalid token")
+	ErrExpiredToken = errors.New("token is expired")
 )
 
 // Valid implements jwt.Claims.
 func (payload *Payload) Valid() error {
 	if time.Now().After(payload.ExpiredAt) {
-		return ErrorTokenExpired
+		return ErrExpiredToken
 	}
 	return nil
 }

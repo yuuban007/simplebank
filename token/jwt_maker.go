@@ -33,6 +33,7 @@ func (maker *JWTMaker) CreateToken(username string, duration time.Duration) (str
 	if err != nil {
 		return "", err
 	}
+	// SigningMethodHS256
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, Payload)
 	return jwtToken.SignedString([]byte(maker.secretKey))
 }
@@ -41,7 +42,7 @@ func (maker *JWTMaker) CreateToken(username string, duration time.Duration) (str
 func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
-		if ok {
+		if !ok {
 			return nil, ErrInvalidToken
 		}
 		// if the convert success, it meaning the alg match
@@ -51,8 +52,8 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyFunc)
 	if err != nil {
 		vErr, ok := err.(*jwt.ValidationError)
-		if ok && errors.Is(vErr.Inner, ErrorTokenExpired) {
-			return nil, ErrorTokenExpired
+		if ok && errors.Is(vErr.Inner, ErrExpiredToken) {
+			return nil, ErrExpiredToken
 		}
 		return nil, ErrInvalidToken
 	}
