@@ -215,6 +215,8 @@ func TestCreateUserAPI(t *testing.T) {
 	}
 }
 
+// TODO: add loginUserAPITest
+
 func randomUser() (user db.User, password string) {
 	user = db.User{
 		Username: util.RandomOwner(),
