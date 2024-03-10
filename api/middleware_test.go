@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -105,7 +106,7 @@ func TestAuthMiddleware(t *testing.T) {
 		})
 	}
 
-	tc := testCases[2]
+	tc := testCases[0]
 	t.Run(tc.name, func(t *testing.T) {
 		server := newTestServer(nil, t)
 
@@ -123,6 +124,12 @@ func TestAuthMiddleware(t *testing.T) {
 		require.NoError(t, err)
 
 		tc.setUpAuth(t, request, server.TokenMaker)
+		header := request.Header.Get(authorizationHeaderKey)
+
+		fields := strings.Fields(header)
+		// fmt.Println(len(fields))
+		require.Equal(t, 2, len(fields))
+
 		server.router.ServeHTTP(recorder, request)
 		tc.checkResponse(t, recorder)
 	})
