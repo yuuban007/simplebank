@@ -74,3 +74,5 @@ func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency s
 	}
 	return account, true
 }
+
+// TODO: add TransferAPI test
